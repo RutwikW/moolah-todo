@@ -1,0 +1,51 @@
+# ====================
+# Node dependencies
+# ====================
+/node_modules/
+/client/node_modules/
+
+# Vue build output
+/client/dist/
+
+# npm logs
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# ====================
+# Environment files
+# ====================
+.env*
+ 
+# ====================
+# Editor directories and files
+# ====================
+.vscode/
+*.code-workspace
+.idea/
+
+# ====================
+# OS generated files
+# ====================
+.DS_Store
+Thumbs.db
+
+# ====================
+# .NET / Visual Studio
+# ====================
+/server/bin/
+/server/obj/
+/server/todo.db
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Rider / JetBrains
+*.iml
+
+# ====================
+# Misc
+# ====================
+coverage/
+*.log
