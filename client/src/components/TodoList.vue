@@ -1,4 +1,3 @@
-<!-- gist: testing git change detection -->
 <template>
   <div class="todo-container">
     <!-- Header with provider toggle and search -->
@@ -35,6 +34,7 @@
 
 <script>
 import axios from 'axios';
+import debounce from 'lodash.debounce';
 import ProviderSelector from './ProviderSelector.vue';
 import SearchBar from './SearchBar.vue';
 import TodoForm from './TodoForm.vue';
@@ -49,8 +49,9 @@ export default {
     searchQuery: ''
   }),
   watch: {
-    provider() { this.fetchTodos() },
-    searchQuery() { this.fetchTodos() }
+    provider() {
+      this.fetchTodos();
+    }
   },
   mounted() {
     this.fetchTodos();
@@ -63,19 +64,27 @@ export default {
       const res = await axios.get('/api/ToDos', { params });
       this.todos = res.data;
     },
-    changeProvider(val) { this.provider = val },
-    searchTodos(query) { this.searchQuery = query },
+    changeProvider(val) {
+      this.provider = val;
+    },
+    searchTodos: debounce(function (query) {
+      this.searchQuery = query;
+      this.fetchTodos();
+    }, 400),
     addTodo(todo) {
-      axios.post('/api/ToDos', todo, { params: { provider: this.provider } })
-           .then(() => this.fetchTodos());
+      axios
+        .post('/api/ToDos', todo, { params: { provider: this.provider } })
+        .then(() => this.fetchTodos());
     },
     updateTodo(todo) {
-      axios.put(`/api/ToDos/${todo.id}`, todo, { params: { provider: this.provider } })
-           .then(() => this.fetchTodos());
+      axios
+        .put(`/api/ToDos/${todo.id}`, todo, { params: { provider: this.provider } })
+        .then(() => this.fetchTodos());
     },
     deleteTodo(id) {
-      axios.delete(`/api/ToDos/${id}`, { params: { provider: this.provider } })
-           .then(() => this.fetchTodos());
+      axios
+        .delete(`/api/ToDos/${id}`, { params: { provider: this.provider } })
+        .then(() => this.fetchTodos());
     }
   }
 };
@@ -111,15 +120,16 @@ export default {
   margin-bottom: 0.75rem;
   padding: 1rem;
   border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
 }
 
-/* transition-group animations */
-.list-enter-active, .list-leave-active {
+.list-enter-active,
+.list-leave-active {
   transition: all 0.3s ease;
 }
-.list-enter-from, .list-leave-to {
+.list-enter-from,
+.list-leave-to {
   opacity: 0;
   transform: translateY(-10px);
 }
